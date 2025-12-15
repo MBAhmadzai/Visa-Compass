@@ -9,7 +9,8 @@ import {
   RefreshCw,
   ChevronDown,
   ChevronUp,
-  Download
+  Download,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { visaRulesData } from "@/data/visaRules";
@@ -336,7 +337,11 @@ export function RoadmapResults({ destinationCountry, aiResponse, onReset }: Road
           onClick={handleSaveAsPdf}
           disabled={isGeneratingPdf}
         >
-          <Download className="h-4 w-4 mr-2" />
+          {isGeneratingPdf ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <Download className="h-4 w-4 mr-2" />
+          )}
           {isGeneratingPdf ? "Generating PDF..." : "Save as PDF"}
         </Button>
         <Button variant="outline" size="lg" onClick={onReset}>
