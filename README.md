@@ -102,7 +102,7 @@ This approach prevents AI hallucination by anchoring responses in verified visa 
 |-------|------------|
 | **Frontend** | React 18 + TypeScript + Vite |
 | **Styling** | Tailwind CSS + shadcn/ui |
-| **Backend** | Lovable Cloud Edge Functions |
+| **Backend** | FireBase realtime Database |
 | **AI Model** | Google Gemini 2.5 Flash via Lovable AI Gateway |
 | **State** | React useState (single-page app) |
 
@@ -118,7 +118,7 @@ This approach prevents AI hallucination by anchoring responses in verified visa 
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/MBAhmadzai/Visa-Compass.git
 cd visaverse-copilot
 
 # Install dependencies
@@ -182,13 +182,3 @@ supabase/
 - 🇯🇵 [Japan Immigration](https://www.isa.go.jp/en/)
 
 ---
-
-## 👨‍💻 Built By
-
-Solo hackathon submission
-
----
-
-## 📄 License
-
-MIT License - See LICENSE file for details
