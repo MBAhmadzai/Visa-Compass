@@ -1,0 +1,4 @@
+project_id = "qhjmlapdlwoygbtcypvq"
+
+[functions.generate-visa-roadmap]
+verify_jwt = false
