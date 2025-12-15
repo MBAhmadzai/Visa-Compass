@@ -8,12 +8,14 @@ import {
   ExternalLink,
   RefreshCw,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { visaRulesData } from "@/data/visaRules";
-import { useState } from "react";
-
+import { useState, useRef } from "react";
+import html2pdf from "html2pdf.js";
+import { toast } from "sonner";
 interface RoadmapResultsProps {
   destinationCountry: string;
   aiResponse: string;
@@ -22,6 +24,8 @@ interface RoadmapResultsProps {
 
 export function RoadmapResults({ destinationCountry, aiResponse, onReset }: RoadmapResultsProps) {
   const countryData = visaRulesData[destinationCountry];
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     documents: true,
     timeline: true,
@@ -32,6 +36,29 @@ export function RoadmapResults({ destinationCountry, aiResponse, onReset }: Road
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
+
+  const handleSaveAsPdf = async () => {
+    if (!contentRef.current) return;
+    
+    setIsGeneratingPdf(true);
+    try {
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `visa-roadmap-${countryData?.country || 'unknown'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      
+      await html2pdf().set(opt).from(contentRef.current).save();
+      toast.success("PDF saved successfully!");
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+      toast.error("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   if (!countryData) {
@@ -47,7 +74,7 @@ export function RoadmapResults({ destinationCountry, aiResponse, onReset }: Road
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" ref={contentRef}>
       {/* Header */}
       <div className="text-center space-y-4 section-fade-in">
         <div className="inline-flex items-center gap-3 px-4 py-2 bg-success/10 text-success rounded-full">
@@ -301,8 +328,17 @@ export function RoadmapResults({ destinationCountry, aiResponse, onReset }: Road
         </p>
       </div>
 
-      {/* Reset Button */}
-      <div className="text-center">
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row justify-center gap-3">
+        <Button 
+          variant="default" 
+          size="lg" 
+          onClick={handleSaveAsPdf}
+          disabled={isGeneratingPdf}
+        >
+          <Download className="h-4 w-4 mr-2" />
+          {isGeneratingPdf ? "Generating PDF..." : "Save as PDF"}
+        </Button>
         <Button variant="outline" size="lg" onClick={onReset}>
           <RefreshCw className="h-4 w-4 mr-2" />
           Start New Search
